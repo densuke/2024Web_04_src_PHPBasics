@@ -20,25 +20,27 @@ class SampleTest(unittest.TestCase):
     def test_Hello(self):
         """pタグ取得のテスト
         最初のpタグの値を取得します。
-        その値が"Hello, World!"ならテストが通ります。
+        その値が"Hello,PHP"ならテストが通ります。
         """
-        self.driver.get('http://web/test.php')
+        self.driver.get('http://web/hello.php')
         time.sleep(2)
         # pタグの最初のものを取得
-        element = self.driver.find_element(By.TAG_NAME, 'p')
-        self.assertEqual('Hello, World!', element.text)
+        element = self.driver.find_element(By.TAG_NAME, "p")
+        self.assertEqual('Hello,PHP', element.text)
+        self.driver.get_screenshot_as_file(f"{sys.path[0]}/../results/hello.png")
 
-    def test_JapaneseText(self):
-        """日本語文字取得のテスト
-        指定のページにアクセスし、2つめのpタグの値を取得します。
-        その値が"テスト"ならテストが通ります。
+    def test_Hello_using_PHP(self):
+        """PHPを使っているかの確認
+        直接PHPのファイルhello.phpを開き、
+        `<?php`を含んでいるかをチェックします。
+
+        ここ少しだけ解説: 実行する状況によりベースのパスが変わり得ます。
+        (ベースディレクトリで動かすか、testsディレクトリで動かすかで変わります。)
+        よって、sys.path[0]を使って、テストファイルの場所を取得しています。
+        この値はスクリプトのあるパスになるため固定となります。
         """
-        self.driver.get('http://web/test.php')
-        time.sleep(2)
-        # pタグの最初のものを取得
-        element = self.driver.find_elements(By.TAG_NAME, 'p')[1]
-        self.assertTrue('テスト' in element.text)
-
+        with open(f"{sys.path[0]}/../public/hello.php") as f:
+            self.assertTrue('<?php' in f.read())
 
 if __name__ == '__main__':
     unittest.main()
